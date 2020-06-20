@@ -10,7 +10,7 @@ public class Grid<TGridObject>
     private int width;
     private int height;
     private int DepthOfGrid;
-    private TGridObject[,] gridArray;
+    public TGridObject[,] gridArray;
     private TextMesh[,] debugValues;
     private float CellSize;
     private Vector3 OriginPos;
@@ -104,7 +104,7 @@ public class Grid<TGridObject>
         y = Mathf.FloorToInt( (WorldPosition.y - OriginPos.y) / CellSize);
     }
 
-    private Vector3 GetWorldPosition(int x,int y)
+    public Vector3 GetWorldPosition(int x,int y)
     {
         return OriginPos + (new Vector3(x, y) * CellSize);
     }
@@ -118,7 +118,11 @@ public class Grid<TGridObject>
 
     private TGridObject GetGridValue(int x, int y)
     {
-        return gridArray[x, y];
+       if (x<=gridArray.GetLength(0)-1 && y<= gridArray.GetLength(1)-1)     
+       {
+            return gridArray[x, y];
+       }
+        return default;
     }
 
     public TGridObject GetGridValue(Vector3 WorldPos)
