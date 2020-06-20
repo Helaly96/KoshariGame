@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using CodeMonkey.Utils;
 using UnityEngine.UI;
+using System.IO;
 
 public class Testing : MonoBehaviour
 {
@@ -112,13 +113,16 @@ public class Testing : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
         {
             //test_count += 1;
             //grid.SetElemetValue(Helper.GetMousePosition(Input.mousePosition, DEPTH_OF_THE_GRID), true);
             //OnMousePress?.Invoke(this, new OnMousePressEventArgs { count = test_count });
             //testunityevent?.Invoke();
             //newTile.SetTileMapObject(Helper.GetMousePosition(Input.mousePosition, DEPTH_OF_THE_GRID), TilemapObject.TileMapSprite.Ground);
+
+            Pathfinder.SetUnWalkable(Helper.GetMousePosition(Input.mousePosition, DEPTH_OF_THE_GRID));
+            
             //    if(tile_to_be_placed == -1)
             //    {
             //        newTile.SetTileMapObject(Helper.GetMousePosition(Input.mousePosition, DEPTH_OF_THE_GRID), TilemapObject.TileMapSprite.None);

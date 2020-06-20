@@ -1167,6 +1167,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2d709a119cbee5349a1413067f29775d, type: 3}
   - {fileID: 21300000, guid: ea16348fc88579f40a2a48aa2420a827, type: 3}
   - {fileID: 21300000, guid: f8b3186559b793042938cff7cdb8c627, type: 3}
+  - {fileID: 21300000, guid: 296d9e7da4edf164f971e3bf34b8d847, type: 3}
   UI_Start_Point: {fileID: 2043879786}
   UI_End_Point: {fileID: 397054235}
   Pathfinder: {fileID: 0}

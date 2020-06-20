@@ -55,16 +55,29 @@ public class AStar : MonoBehaviour
         {
             for (int j = 0; j < grid.gridArray.GetLength(1); j++)
             {
-                string cost = Calculate_H_Cost(i, j).ToString();
+                float cost_ = Calculate_H_Cost(i, j);
+                string cost = cost_.ToString();
+
                 Vector3 Pos = grid.GetWorldPosition(i, j);
                 float size = grid.GetCellSize();
-                HCost[i, j] = UtilsClass.CreateWorldText(cost, null, Pos + new Vector3(0, size / 2, 100), 25 , Color.red);
-                grid.gridArray[i, j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[0];
+                HCost[i, j] = UtilsClass.CreateWorldText(cost, null, Pos + new Vector3(0, size / 2, 100), 25, Color.red);
                 grid.gridArray[i, j].HCost = int.Parse(cost);
                 grid.gridArray[i, j].name = _;
                 LookUpTable.Add(_, new Vector2(i, j));
-                UtilsClass.CreateWorldText(_.ToString(), null, Pos + new Vector3(size/2 , 3 , 100), 20, Color.white);
-                _ = (char) ((int)_ + 1);
+                UtilsClass.CreateWorldText(_.ToString(), null, Pos + new Vector3(size / 2, 3, 100), 20, Color.white);
+                _ = (char)((int)_ + 1);
+
+
+                if (cost_ != 1000000)
+                {
+                    grid.gridArray[i, j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[0];
+                    
+                }
+                else
+                {
+                    grid.gridArray[i, j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[4];
+                }
+                
             }
         }
     }
@@ -104,25 +117,31 @@ public class AStar : MonoBehaviour
 
     public void AddElementsToQueue(float i, float j,CostsOfMove TypeOfMovement,List<char>RoadSoFar)
     {
-
-        if( (i<=grid.gridArray.GetLength(0)-1) && (j <= grid.gridArray.GetLength(1) - 1)&&(i>=0)&&(j>=0))
-        {
-            float cost = grid.gridArray[(int)i, (int)j].HCost + (int)TypeOfMovement;
-            char Name = GetGridCharXY(i, j);
-            if (!(Searched.Contains(Name)))
+        
+            if ((i <= grid.gridArray.GetLength(0) - 1) && (j <= grid.gridArray.GetLength(1) - 1) && (i >= 0) && (j >= 0))
             {
-                List<char> R_ = new List<char>();
-                for (int q = 0; q < RoadSoFar.Count; q++)
+                if((grid.gridArray[(int)i, (int)j].walkable_))
                 {
-                    R_.Add(RoadSoFar[q]);
-                }
-                R_.Add(Name);
-                QueueElementAStar _ = new QueueElementAStar(cost, Name, R_);
-                //_.PrintTheCurrentRoad();
-                Queue.Add(_);
-                grid.gridArray[(int)i, (int)j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[1];
+                    float cost = grid.gridArray[(int)i, (int)j].HCost + (int)TypeOfMovement;
+                    char Name = GetGridCharXY(i, j);
+                    if (!(Searched.Contains(Name)))
+                    {
+                        List<char> R_ = new List<char>();
+                        for (int q = 0; q < RoadSoFar.Count; q++)
+                        {
+                            R_.Add(RoadSoFar[q]);
+                        }
+                        R_.Add(Name);
+                        QueueElementAStar _ = new QueueElementAStar(cost, Name, R_);
+                        //_.PrintTheCurrentRoad();
+                        Queue.Add(_);
+                        grid.gridArray[(int)i, (int)j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[1];
+                    }
             }
-        }
+                
+            }
+        
+        
     }
 
     public void A_Star_Step()
@@ -190,15 +209,29 @@ public class AStar : MonoBehaviour
 
     float Calculate_H_Cost(int x,int y)
     {
-        float Horizontal_diff = Math.Abs(EndPos.x - x);
-        float Vertical_diff =   Math.Abs(EndPos.y - y);
+        if (grid.gridArray[x, y].walkable_)
+        {
+            float Horizontal_diff = Math.Abs(EndPos.x - x);
+            float Vertical_diff = Math.Abs(EndPos.y - y);
 
-        float temp = Math.Min(Horizontal_diff, Vertical_diff);
+            float temp = Math.Min(Horizontal_diff, Vertical_diff);
 
-        return ( (int)CostsOfMove.Diagonal_Cost * Math.Min(Horizontal_diff, Vertical_diff)) + ((int)CostsOfMove.Horizontal_Cost * (Horizontal_diff - temp)) + ((int)CostsOfMove.Vertical_Cost * (Vertical_diff - temp));
+            return ((int)CostsOfMove.Diagonal_Cost * Math.Min(Horizontal_diff, Vertical_diff)) + ((int)CostsOfMove.Horizontal_Cost * (Horizontal_diff - temp)) + ((int)CostsOfMove.Vertical_Cost * (Vertical_diff - temp));
+        }
+        else
+        {
+            return 1000000;
+        }
+
     }
 
-  
+    
+    public  void SetUnWalkable(Vector3 j)
+    {
+        int x, y;
+        grid.GetXYFromWorldPosition(j, out x, out y);
+        grid.gridArray[x,y].walkable_ = false;
+    }
 }
 
 public class AStarGridObject
@@ -212,7 +245,7 @@ public class AStarGridObject
     public float G_Cost;
     public float F_Cost;
 
-    bool walkable_ = true;
+    public bool walkable_ = true;
 
     private Grid<AStarGridObject> grid;
     public GameObject MySprite;
