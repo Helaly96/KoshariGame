@@ -147,60 +147,65 @@ public class AStar : MonoBehaviour
     public void A_Star_Step()
     {
         //Get the first Element
-        QueueElementAStar Current = Queue[0];
-
-        if (Current.Name.Equals(GetGridCharXY(EndPos.x, EndPos.y)))
+        while(true)
         {
+            QueueElementAStar Current = Queue[0];
 
-           Vector2 GO = GetXYFromName(Current.Name);
-            float _i = GO.x;
-            float _j = GO.y;
+            if (Current.Name.Equals(GetGridCharXY(EndPos.x, EndPos.y)))
+            {
 
-           for (int i = 0; i <Current.road_.Count;i++)
-           {
-                Vector2 __ = GetXYFromName(Current.road_[i]);
-                grid.gridArray[(int)__[0], (int)__[1]].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[3];
+                Vector2 GO = GetXYFromName(Current.Name);
+                float _i = GO.x;
+                float _j = GO.y;
+
+                for (int i = 0; i < Current.road_.Count; i++)
+                {
+                    Vector2 __ = GetXYFromName(Current.road_[i]);
+                    grid.gridArray[(int)__[0], (int)__[1]].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[3];
+
+                }
+                break;
+            }
+
+
+            Queue.RemoveAt(0);
+            Debug.Log(Current.Name + "  " + GetGridCharXY(EndPos.x, EndPos.y));
+            if (!(Searched.Contains(Current.Name)))
+            {
+                //Get its original grid node
+                Vector2 GO = GetXYFromName(Current.Name);
+
+
+                float _i = GO.x;
+                float _j = GO.y;
+
+                Debug.Log("THE CURRENT IS " + Current.Name + " and has i of " + _i + " and j of   " + _j);
+
+                AddElementsToQueue(_i + 1, _j, CostsOfMove.Vertical_Cost, Current.road_);
+                AddElementsToQueue(_i - 1, _j, CostsOfMove.Vertical_Cost, Current.road_);
+                AddElementsToQueue(_i, _j + 1, CostsOfMove.Horizontal_Cost, Current.road_);
+                AddElementsToQueue(_i, _j - 1, CostsOfMove.Horizontal_Cost, Current.road_);
+
+                AddElementsToQueue(_i + 1, _j + 1, CostsOfMove.Diagonal_Cost, Current.road_);
+                AddElementsToQueue(_i - 1, _j - 1, CostsOfMove.Diagonal_Cost, Current.road_);
+                AddElementsToQueue(_i + 1, _j - 1, CostsOfMove.Diagonal_Cost, Current.road_);
+                AddElementsToQueue(_i - 1, _j + 1, CostsOfMove.Diagonal_Cost, Current.road_);
+
+                grid.gridArray[(int)_i, (int)_j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[2];
+
+                Searched.Add(Current.Name);
+
+
+                Queue.Sort(SortByCost);
+
 
             }
-            return;
+            
         }
-
-
-        Queue.RemoveAt(0);
-        Debug.Log(Current.Name+"  " + GetGridCharXY(EndPos.x, EndPos.y));
-        if ( !(Searched.Contains(Current.Name)) )
-        {
-            //Get its original grid node
-            Vector2 GO = GetXYFromName(Current.Name);
-
-
-            float _i = GO.x;
-            float _j = GO.y;
-
-            Debug.Log("THE CURRENT IS " + Current.Name + " and has i of " + _i + " and j of   " + _j);
-
-            AddElementsToQueue(_i + 1, _j, CostsOfMove.Vertical_Cost, Current.road_);
-            AddElementsToQueue(_i - 1, _j, CostsOfMove.Vertical_Cost, Current.road_);
-            AddElementsToQueue(_i, _j + 1, CostsOfMove.Horizontal_Cost, Current.road_);
-            AddElementsToQueue(_i, _j - 1, CostsOfMove.Horizontal_Cost, Current.road_);
-
-            AddElementsToQueue(_i + 1, _j + 1, CostsOfMove.Diagonal_Cost, Current.road_);
-            AddElementsToQueue(_i - 1, _j - 1, CostsOfMove.Diagonal_Cost, Current.road_);
-            AddElementsToQueue(_i + 1, _j - 1, CostsOfMove.Diagonal_Cost, Current.road_);
-            AddElementsToQueue(_i - 1, _j + 1, CostsOfMove.Diagonal_Cost, Current.road_);
-
-            grid.gridArray[(int)_i, (int)_j].MySprite.GetComponent<SpriteRenderer>().sprite = State_Colors[2];
-
-            Searched.Add(Current.Name);
-
-
-            Queue.Sort(SortByCost);
-
-
-        }
+        
 
     }
-    // Update is called once per frame
+ 
 
     public Vector2 GetXYFromName(char x)
     {
