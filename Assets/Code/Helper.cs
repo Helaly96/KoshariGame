@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Helper : MonoBehaviour
 {
-    public static Helper KoshariUtils;
+    //public static Helper KoshariUtils;
 
     public static void DrawRectangle (Vector3 CurrentWorldPosition , float CellSize)
     {

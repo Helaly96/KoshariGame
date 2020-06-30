@@ -67,6 +67,17 @@ public class Testing : MonoBehaviour
     {
         Pathfinder.A_Star_Step();
     }
+    public void MakeOneStepA()
+    {
+        Pathfinder.Test_Step();
+    }
+
+    public void RestartAll()
+    {
+        Pathfinder = new AStar(7, 7, 10, DEPTH_OF_THE_GRID, new Vector3(0, 10, 0), Sprites2);
+
+    }
+
     public void UI_Get_val()
     {
         string _1 = UI_Start_Point.text;
